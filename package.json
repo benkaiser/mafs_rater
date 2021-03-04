@@ -1,4 +1,5 @@
 {
+  "homepage": "mafsrater.com",
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
