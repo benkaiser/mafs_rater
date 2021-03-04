@@ -11,7 +11,7 @@ class App extends React.Component<AppProps> {
 
   public render(): React.ReactNode {
     return <div className="container">
-      <h1 className="text-center">MAFS Rater</h1>
+      <h1 className="text-center heading">MAFS Rater<small>.com</small></h1>
       <Rater />
     </div>;
   }
