@@ -9,8 +9,8 @@ class App extends React.Component {
     return /* @__PURE__ */ React.createElement("div", {
       className: "container"
     }, /* @__PURE__ */ React.createElement("h1", {
-      className: "text-center"
-    }, "MAFS Rater"), /* @__PURE__ */ React.createElement(Rater, null));
+      className: "text-center heading"
+    }, "MAFS Rater", /* @__PURE__ */ React.createElement("small", null, ".com")), /* @__PURE__ */ React.createElement(Rater, null));
   }
 }
 export default App;
