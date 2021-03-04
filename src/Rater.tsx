@@ -1,0 +1,142 @@
+import React from 'react';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
+
+interface IRaterProps {}
+
+interface IRaterState {
+  options?: string[];
+  mode?: 'brides' | 'grooms';
+  hardMode: boolean;
+}
+
+interface IFullItemDetails {
+  id: string;
+  name: string;
+  index: number;
+}
+
+const optionGroups = {
+  'grooms': [
+    'brett-helling',
+    'bryce-ruthven',
+    'cameron-dunne',
+    'jake-edwards',
+    'james-susler',
+    'jason-engler',
+    'patrick-hayes-dwyer',
+    'russell-duance',
+    'sam-carraro',
+  ],
+  'brides': [
+    'alana-lister',
+    'belinda-vickers',
+    'beth-moore',
+    'booka-nile',
+    'coco-stedman',
+    'joanne-todd',
+    'melissa-rawson',
+    'rebecca-zemek',
+    'samantha-harvey',
+  ]
+};
+
+class Rater extends React.Component<IRaterProps, IRaterState> {
+  private SortableItem = SortableElement(({ item }: { item: IFullItemDetails }) => {
+    const imgId = item.id === "your-partner" ? `your-partner-${ this.state.mode }` : item.id;
+    const name = item.id === "your-partner" ? "My Partner" : item.name;
+    return (
+      <div className="item">
+        <div className="inner-item">
+          <img src={`images/individual/${imgId}.jpg`} />
+          <p>{(item.index + 1)}. {name}</p>
+        </div>
+      </div>
+    );
+  });
+
+  private SortableList = SortableContainer(({ items }: { items: string[] }) => (
+    <div className="sortableContainer">
+      {items.map((item: string, index: number) => {
+        const fullDetail: IFullItemDetails = this._fullDetail(item, index);
+        return <this.SortableItem
+          key={`${fullDetail.id}`}
+          index={index}
+          item={fullDetail}
+        />
+      })}
+    </div>
+  ));
+
+  constructor(props: IRaterProps) {
+    super(props);
+    this.state = {
+      hardMode: false
+    };
+  }
+
+  public render(): React.ReactNode {
+    if (!this.state.options) {
+      return this._renderPicker();
+    } else {
+      return this._optionsView();
+    }
+  }
+
+  private _renderPicker(): React.ReactNode {
+    return <div>
+      <button className="button-primary" onClick={this._select.bind(this, 'grooms')}>Rate Grooms</button>
+      <button className="button-primary" onClick={this._select.bind(this, 'brides')}>Rate Brides</button>
+      <p className="text-center">
+        Taking inspiration from the "experts" in Married at First Sight (Australia) Season 8, go ahead and rate the participants of the show. I'm sure it'll be really constructive for your relationship, and really help boost the self esteem of the show participants. While your at it don't forget to share a screenshot of your ratings as broadly as possible on social media #MAFS.
+      </p>
+      <img className="nodImage" src="images/nod.gif" alt="John Aiken nodding" />
+    </div>
+  }
+
+  private _optionsView(): React.ReactNode {
+    return (
+      <div>
+        <this.SortableList
+          items={this.state.options!}
+          onSortEnd={this.onSortEnd}
+          axis="xy"
+          helperClass="SortableHelper"
+        />
+        <button className="button-secondary" onClick={this._toggleHardMode}>Toggle Hard Mode</button>
+        <button className="button-secondary" onClick={this._select.bind(this, this.state.mode === 'brides' ? 'grooms' : 'brides' )}>Switch to {this.state.mode === 'brides' ? 'Grooms' : 'Brides'}</button>
+      </div>
+    );
+  }
+
+  private _toggleHardMode = () => {
+    const nextHardMode = !this.state.hardMode;
+    this.setState({
+      hardMode: nextHardMode,
+      options: nextHardMode ? this.state.options!.concat('your-partner') : this.state.options!.filter(item => item !== 'your-partner')
+    })
+  }
+
+  private onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
+    this.setState({
+      options: arrayMove(this.state.options!, oldIndex, newIndex)
+    });
+  };
+
+  private _select(group: 'grooms' | 'brides'): void {
+    this.setState({
+      options: optionGroups[group],
+      hardMode: false,
+      mode: group
+    })
+  }
+
+  private _fullDetail(id: string, index: number): IFullItemDetails {
+    return {
+      id,
+      name: id.split('-')[0],
+      index
+    }
+  };
+}
+
+export default Rater;
