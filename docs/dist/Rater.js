@@ -63,6 +63,13 @@ class Rater extends React.Component {
     this.state = {
       hardMode: false
     };
+    window.onpopstate = () => {
+      this.setState({
+        hardMode: false,
+        mode: void 0,
+        options: void 0
+      });
+    };
   }
   render() {
     if (!this.state.options) {
@@ -101,6 +108,9 @@ class Rater extends React.Component {
     }, "Switch to ", this.state.mode === "brides" ? "Grooms" : "Brides"));
   }
   _select(group) {
+    if (this.state.mode === void 0) {
+      window.history.pushState(null, "", "?mode=rating");
+    }
     this.setState({
       options: optionGroups[group],
       hardMode: false,

@@ -48,3 +48,8 @@
 .heading small {
   color: #888;
 }
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+}
