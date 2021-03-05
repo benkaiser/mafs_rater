@@ -72,6 +72,13 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
     this.state = {
       hardMode: false
     };
+    window.onpopstate = () => {
+      this.setState({
+        hardMode: false,
+        mode: undefined,
+        options: undefined,
+      })
+    };
   }
 
   public render(): React.ReactNode {
@@ -123,6 +130,9 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
   };
 
   private _select(group: 'grooms' | 'brides'): void {
+    if (this.state.mode === undefined) {
+      window.history.pushState(null, '', '?mode=rating');
+    }
     this.setState({
       options: optionGroups[group],
       hardMode: false,
