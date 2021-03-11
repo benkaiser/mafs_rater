@@ -1,5 +1,6 @@
 {
   "imports": {
+    "html2canvas": "./html2canvas.js",
     "react": "./react.js",
     "react-dom": "./react-dom.js",
     "react-sortable-hoc": "./react-sortable-hoc.js"

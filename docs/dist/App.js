@@ -8,9 +8,7 @@ class App extends React.Component {
   render() {
     return /* @__PURE__ */ React.createElement("div", {
       className: "container"
-    }, /* @__PURE__ */ React.createElement("h1", {
-      className: "text-center heading"
-    }, "MAFS Rater", /* @__PURE__ */ React.createElement("small", null, ".com")), /* @__PURE__ */ React.createElement(Rater, null), /* @__PURE__ */ React.createElement("p", {
+    }, /* @__PURE__ */ React.createElement(Rater, null), /* @__PURE__ */ React.createElement("p", {
       className: "footer"
     }, "Made with ", /* @__PURE__ */ React.createElement("img", {
       width: "16",

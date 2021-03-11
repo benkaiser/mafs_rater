@@ -1,3 +1,4 @@
+import html2canvas from "../snowpack/pkg/html2canvas.js";
 import React from "../snowpack/pkg/react.js";
 import {SortableContainer, SortableElement, arrayMove} from "../snowpack/pkg/react-sortable-hoc.js";
 const optionGroups = {
@@ -55,6 +56,22 @@ class Rater extends React.Component {
         options: nextHardMode ? this.state.options.concat("your-partner") : this.state.options.filter((item) => item !== "your-partner")
       });
     };
+    this._share = () => {
+      html2canvas(document.getElementById("shareTarget"), {
+        scrollX: 0,
+        scrollY: -window.scrollY
+      }).then(async (canvas) => {
+        const dataUrl = canvas.toDataURL();
+        const blob = await (await fetch(dataUrl)).blob();
+        const filesArray = [new File([blob], "htmldiv.png", {type: blob.type, lastModified: new Date().getTime()})];
+        const shareData = {
+          files: filesArray
+        };
+        navigator.share(shareData).then(() => {
+          console.log("Shared successfully");
+        });
+      });
+    };
     this.onSortEnd = ({oldIndex, newIndex}) => {
       this.setState({
         options: arrayMove(this.state.options, oldIndex, newIndex)
@@ -72,11 +89,11 @@ class Rater extends React.Component {
     };
   }
   render() {
-    if (!this.state.options) {
-      return this._renderPicker();
-    } else {
-      return this._optionsView();
-    }
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", {
+      id: "shareTarget"
+    }, /* @__PURE__ */ React.createElement("h1", {
+      className: "text-center heading"
+    }, "MAFS Rater", /* @__PURE__ */ React.createElement("small", null, ".com")), this.state.options ? this._optionsView() : this._renderPicker()), this.state.options && this._optionsViewButtons());
   }
   _renderPicker() {
     return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("button", {
@@ -99,13 +116,19 @@ class Rater extends React.Component {
       onSortEnd: this.onSortEnd,
       axis: "xy",
       helperClass: "SortableHelper"
-    }), /* @__PURE__ */ React.createElement("button", {
+    }));
+  }
+  _optionsViewButtons() {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("button", {
       className: "button-secondary",
       onClick: this._toggleHardMode
     }, "Toggle Hard Mode"), /* @__PURE__ */ React.createElement("button", {
       className: "button-secondary",
       onClick: this._select.bind(this, this.state.mode === "brides" ? "grooms" : "brides")
-    }, "Switch to ", this.state.mode === "brides" ? "Grooms" : "Brides"));
+    }, "Switch to ", this.state.mode === "brides" ? "Grooms" : "Brides"), /* @__PURE__ */ React.createElement("button", {
+      className: "button-secondary",
+      onClick: this._share
+    }, "Share (beta)"));
   }
   _select(group) {
     if (this.state.mode === void 0) {
