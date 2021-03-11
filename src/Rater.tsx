@@ -1,3 +1,4 @@
+import html2canvas from 'html2canvas';
 import React from 'react';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 
@@ -82,11 +83,15 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
   }
 
   public render(): React.ReactNode {
-    if (!this.state.options) {
-      return this._renderPicker();
-    } else {
-      return this._optionsView();
-    }
+    return (
+      <div>
+      <div id='shareTarget'>
+        <h1 className="text-center heading">MAFS Rater<small>.com</small></h1>
+        { this.state.options ? this._optionsView() : this._renderPicker() }
+      </div>
+        { this.state.options && this._optionsViewButtons() }
+      </div>
+    );
   }
 
   private _renderPicker(): React.ReactNode {
@@ -109,9 +114,17 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
           axis="xy"
           helperClass="SortableHelper"
         />
+      </div>
+    );
+  }
+
+  private _optionsViewButtons(): React.ReactNode {
+    return (
+      <>
         <button className="button-secondary" onClick={this._toggleHardMode}>Toggle Hard Mode</button>
         <button className="button-secondary" onClick={this._select.bind(this, this.state.mode === 'brides' ? 'grooms' : 'brides' )}>Switch to {this.state.mode === 'brides' ? 'Grooms' : 'Brides'}</button>
-      </div>
+        <button className="button-secondary" onClick={this._share}>Share (beta)</button>
+      </>
     );
   }
 
@@ -121,6 +134,23 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
       hardMode: nextHardMode,
       options: nextHardMode ? this.state.options!.concat('your-partner') : this.state.options!.filter(item => item !== 'your-partner')
     })
+  }
+
+  private _share = () => {
+    html2canvas(document.getElementById('shareTarget')!, {
+      scrollX: 0,
+      scrollY: -window.scrollY
+  }).then(async (canvas) => {
+      const dataUrl = canvas.toDataURL();
+      const blob = await (await fetch(dataUrl)).blob();
+      const filesArray: File[] = [new File([blob], 'htmldiv.png', { type: blob.type, lastModified: new Date().getTime() })];
+      const shareData = {
+        files: filesArray,
+      };
+      navigator.share(shareData as any).then(() => {
+        console.log('Shared successfully');
+      })
+    });
   }
 
   private onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
