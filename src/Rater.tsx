@@ -16,29 +16,55 @@ interface IFullItemDetails {
   index: number;
 }
 
+
+
 const optionGroups = {
-  'grooms': [
-    'brett-helling',
-    'bryce-ruthven',
-    'cameron-dunne',
-    'jake-edwards',
-    'james-susler',
-    'jason-engler',
-    'patrick-hayes-dwyer',
-    'russell-duance',
-    'sam-carraro',
-  ],
-  'brides': [
-    'alana-lister',
-    'belinda-vickers',
-    'beth-moore',
-    'booka-nile',
-    'coco-stedman',
-    'joanne-todd',
-    'melissa-rawson',
-    'rebecca-zemek',
-    'samantha-harvey',
-  ]
+  2021: {
+    'grooms': [
+      'brett-helling',
+      'bryce-ruthven',
+      'cameron-dunne',
+      'jake-edwards',
+      'james-susler',
+      'jason-engler',
+      'patrick-hayes-dwyer',
+      'russell-duance',
+      'sam-carraro',
+    ],
+    'brides': [
+      'alana-lister',
+      'belinda-vickers',
+      'beth-moore',
+      'booka-nile',
+      'coco-stedman',
+      'joanne-todd',
+      'melissa-rawson',
+      'rebecca-zemek',
+      'samantha-harvey',
+    ]
+  },
+  2022: {
+    'grooms': [
+      'al-perkins',
+      'andrew-davis',
+      'anthony-cincotta',
+      'brent-vitiello',
+      'cody-bromley',
+      'jack-millar',
+      'jackson-lonie',
+      'mitch-eynaud'
+    ],
+    'brides': [
+      'domenica-calarco',
+      'ella-ding',
+      'holly-greenstein',
+      'olivia-frazer',
+      'samantha-moitzi',
+      'selin-makoni',
+      'selina-chhaur',
+      'tamara-djordjevic'
+    ]
+  }
 };
 
 class Rater extends React.Component<IRaterProps, IRaterState> {
@@ -99,9 +125,12 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
       <button className="button-primary" onClick={this._select.bind(this, 'grooms')}>Rate Grooms</button>
       <button className="button-primary" onClick={this._select.bind(this, 'brides')}>Rate Brides</button>
       <p className="text-center">
-        Taking inspiration from the "experts" in Married at First Sight (Australia) Season 8, go ahead and rate the participants of the show. I'm sure it'll be really constructive for your relationship, and really help boost the self esteem of the show participants. While your at it don't forget to share a screenshot of your ratings as broadly as possible on social media #MAFS.
+        Taking inspiration from the "experts" in Married at First Sight (Australia) Season {this._season()}, go ahead and rate the participants of the show. I'm sure it'll be really constructive for your relationship, and really help boost the self esteem of the show participants. While your at it don't forget to share a screenshot of your ratings on social media #MAFSrater.
       </p>
       <img className="nodImage" src="images/nod.gif" alt="John Aiken nodding" />
+      { this._season() === 9
+        ? <p className="text-center"><a href='./2021/'>Click here to see the season 8 version</a></p>
+        : <p className="text-center"><a href='../'>Click here to see the season 9 version</a></p>}
     </div>
   }
 
@@ -164,10 +193,14 @@ class Rater extends React.Component<IRaterProps, IRaterState> {
       window.history.pushState(null, '', '?mode=rating');
     }
     this.setState({
-      options: optionGroups[group],
+      options: optionGroups[window.location.pathname.includes('2021') ? 2021 : 2022][group],
       hardMode: false,
       mode: group
     })
+  }
+
+  private _season(): number {
+    return window.location.pathname.includes('2021') ? 8 : 9;
   }
 
   private _fullDetail(id: string, index: number): IFullItemDetails {
