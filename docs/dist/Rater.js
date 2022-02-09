@@ -2,28 +2,52 @@ import html2canvas from "../snowpack/pkg/html2canvas.js";
 import React from "../snowpack/pkg/react.js";
 import {SortableContainer, SortableElement, arrayMove} from "../snowpack/pkg/react-sortable-hoc.js";
 const optionGroups = {
-  grooms: [
-    "brett-helling",
-    "bryce-ruthven",
-    "cameron-dunne",
-    "jake-edwards",
-    "james-susler",
-    "jason-engler",
-    "patrick-hayes-dwyer",
-    "russell-duance",
-    "sam-carraro"
-  ],
-  brides: [
-    "alana-lister",
-    "belinda-vickers",
-    "beth-moore",
-    "booka-nile",
-    "coco-stedman",
-    "joanne-todd",
-    "melissa-rawson",
-    "rebecca-zemek",
-    "samantha-harvey"
-  ]
+  2021: {
+    grooms: [
+      "brett-helling",
+      "bryce-ruthven",
+      "cameron-dunne",
+      "jake-edwards",
+      "james-susler",
+      "jason-engler",
+      "patrick-hayes-dwyer",
+      "russell-duance",
+      "sam-carraro"
+    ],
+    brides: [
+      "alana-lister",
+      "belinda-vickers",
+      "beth-moore",
+      "booka-nile",
+      "coco-stedman",
+      "joanne-todd",
+      "melissa-rawson",
+      "rebecca-zemek",
+      "samantha-harvey"
+    ]
+  },
+  2022: {
+    grooms: [
+      "al-perkins",
+      "andrew-davis",
+      "anthony-cincotta",
+      "brent-vitiello",
+      "cody-bromley",
+      "jack-millar",
+      "jackson-lonie",
+      "mitch-eynaud"
+    ],
+    brides: [
+      "domenica-calarco",
+      "ella-ding",
+      "holly-greenstein",
+      "olivia-frazer",
+      "samantha-moitzi",
+      "selin-makoni",
+      "selina-chhaur",
+      "tamara-djordjevic"
+    ]
+  }
 };
 class Rater extends React.Component {
   constructor(props) {
@@ -104,11 +128,19 @@ class Rater extends React.Component {
       onClick: this._select.bind(this, "brides")
     }, "Rate Brides"), /* @__PURE__ */ React.createElement("p", {
       className: "text-center"
-    }, `Taking inspiration from the "experts" in Married at First Sight (Australia) Season 8, go ahead and rate the participants of the show. I'm sure it'll be really constructive for your relationship, and really help boost the self esteem of the show participants. While your at it don't forget to share a screenshot of your ratings as broadly as possible on social media #MAFS.`), /* @__PURE__ */ React.createElement("img", {
+    }, 'Taking inspiration from the "experts" in Married at First Sight (Australia) Season ', this._season(), ", go ahead and rate the participants of the show. I'm sure it'll be really constructive for your relationship, and really help boost the self esteem of the show participants. While your at it don't forget to share a screenshot of your ratings on social media #MAFSrater."), /* @__PURE__ */ React.createElement("img", {
       className: "nodImage",
       src: "images/nod.gif",
       alt: "John Aiken nodding"
-    }));
+    }), this._season() === 9 ? /* @__PURE__ */ React.createElement("p", {
+      className: "text-center"
+    }, /* @__PURE__ */ React.createElement("a", {
+      href: "./2021/"
+    }, "Click here to see the season 8 version")) : /* @__PURE__ */ React.createElement("p", {
+      className: "text-center"
+    }, /* @__PURE__ */ React.createElement("a", {
+      href: "../"
+    }, "Click here to see the season 9 version")));
   }
   _optionsView() {
     return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(this.SortableList, {
@@ -135,10 +167,13 @@ class Rater extends React.Component {
       window.history.pushState(null, "", "?mode=rating");
     }
     this.setState({
-      options: optionGroups[group],
+      options: optionGroups[window.location.pathname.includes("2021") ? 2021 : 2022][group],
       hardMode: false,
       mode: group
     });
+  }
+  _season() {
+    return window.location.pathname.includes("2021") ? 8 : 9;
   }
   _fullDetail(id, index) {
     return {

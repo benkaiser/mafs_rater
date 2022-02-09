@@ -15,7 +15,7 @@ class App extends React.Component {
       src: "images/heart-solid.svg",
       alt: "love"
     }), " by ", /* @__PURE__ */ React.createElement("a", {
-      href: "https://github.com/benkaiser",
+      href: "https://app.singlelink.co/u/benkaiser",
       target: "_blank"
     }, "Benjamin Kaiser")));
   }
